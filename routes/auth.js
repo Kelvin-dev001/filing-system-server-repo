@@ -59,8 +59,9 @@ router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/login', session: false }),
   (req, res) => {
     const token = generateToken(req.user);
-    // For production, use an environment variable for the client URL
-    res.redirect(`http://localhost:3000/?token=${token}`);
+    // Use environment variable for client URL
+    const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
+    res.redirect(`${clientUrl}/?token=${token}`);
     // If you want to send JSON instead, uncomment:
     // res.json({ token });
   }
