@@ -39,6 +39,14 @@ router.post('/register', async (req, res) => {
 
 // Local login
 router.post('/login', async (req, res, next) => {
+   // TEMPORARY TEST USER LOGIN
+   if (req.body.email === "testuser@example.com" && req.body.password === "TestPassword123!") {
+    // You can customize the returned user object as needed
+    return res.json({
+      token: "test-token",
+      user: { id: "testid", name: "Test User", email: "testuser@example.com" }
+    });
+  }
   passport.authenticate('local', { session: false }, (err, user, info) => {
     if (err) return res.status(500).json({ message: 'Server error.' });
     if (!user) return res.status(400).json({ message: info ? info.message : 'Login failed' });
