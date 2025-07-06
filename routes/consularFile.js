@@ -5,6 +5,9 @@ const consularFileController = require('../controllers/consularFileController');
 // Create a new consular file
 router.post('/', consularFileController.createConsularFile);
 
+// Legacy search by fileNumber (must come before '/:id')
+router.get('/search', consularFileController.searchConsularFiles);
+
 // Get all consular files with pagination & search
 router.get('/', consularFileController.getConsularFiles);
 
@@ -16,8 +19,5 @@ router.put('/:id', consularFileController.updateConsularFile);
 
 // Delete a consular file
 router.delete('/:id', consularFileController.deleteConsularFile);
-
-// Search by fileNumber (legacy)
-router.get('/search', consularFileController.searchConsularFiles);
 
 module.exports = router;

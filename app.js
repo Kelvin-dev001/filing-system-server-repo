@@ -17,6 +17,7 @@ app.use('/uploads', express.static('uploads')); // Serve uploads
 
 app.use('/api/consular-files', consularFileRoutes);
 app.use('/api/registrations', registrationRoutes);
+app.use('/api/registration', registrationRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/auth', authRoutes);
 
