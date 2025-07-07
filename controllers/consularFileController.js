@@ -17,13 +17,11 @@ exports.getConsularFiles = async (req, res) => {
     const { page = 1, limit = 10, search = "", dateFrom, dateTo } = req.query;
     const query = {};
 
-    // Search by name or fileNumber, subject, or description if present
+    // Only search fields that exist in the model: name and fileNumber
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
-        { fileNumber: { $regex: search, $options: 'i' } },
-        { subject: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { fileNumber: { $regex: search, $options: 'i' } }
       ];
     }
 
