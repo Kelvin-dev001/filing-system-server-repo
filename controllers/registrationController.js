@@ -3,7 +3,45 @@ const Registration = require('../models/registration');
 // Create
 exports.createRegistration = async (req, res) => {
   try {
-    const newReg = new Registration(req.body);
+    // Allow only valid fields from the schema
+    const {
+      fullName, fileNumber, countryPlaceOfBirth, birthDate, maritalStatus, profession,
+      fatherName, motherName, education, workplaceOrSchool, phone, cellPhone,
+      passportOrIdType, passportOrIdNumber, passportIssuedAt, passportValidUntil,
+      residenceKenya, location, residenceMozambique, district, documentsPresented,
+      issuedOn, entryDateKenya, currentResidence, observations, spouse,
+      familyMozambique, familyUnder15, consularCardNumber, consularCardIssueDate,
+      passports, repatriations, civilActs, passportPhoto, formImages
+    } = req.body;
+
+    // Ensure familyUnder15 supports ageType (years/months)
+    const sanitizedFamilyUnder15 = Array.isArray(familyUnder15)
+      ? familyUnder15.map(m => ({
+          ...m,
+          ageType: m.ageType === "months" ? "months" : "years", // default to years if missing/invalid
+        }))
+      : [];
+
+    // Optionally, same for familyMozambique if you want ageType there too
+    const sanitizedFamilyMozambique = Array.isArray(familyMozambique)
+      ? familyMozambique.map(m => ({
+          ...m,
+          ageType: m.ageType === "months" ? "months" : "years", // default to years if missing/invalid
+        }))
+      : [];
+
+    const newReg = new Registration({
+      fullName, fileNumber, countryPlaceOfBirth, birthDate, maritalStatus, profession,
+      fatherName, motherName, education, workplaceOrSchool, phone, cellPhone,
+      passportOrIdType, passportOrIdNumber, passportIssuedAt, passportValidUntil,
+      residenceKenya, location, residenceMozambique, district, documentsPresented,
+      issuedOn, entryDateKenya, currentResidence, observations, spouse,
+      familyMozambique: sanitizedFamilyMozambique,
+      familyUnder15: sanitizedFamilyUnder15,
+      consularCardNumber, consularCardIssueDate,
+      passports, repatriations, civilActs, passportPhoto, formImages
+    });
+
     await newReg.save();
     res.status(201).json(newReg);
   } catch (err) {
@@ -17,12 +55,13 @@ exports.getRegistrations = async (req, res) => {
     const { page = 1, limit = 10, search = "", dateFrom, dateTo } = req.query;
     const query = {};
 
-    // Search by fullName or fileNumber or passportOrIdNumber
+    // Search by fullName, fileNumber, passportOrIdType, passportOrIdNumber
     if (search) {
       query.$or = [
         { fullName: { $regex: search, $options: 'i' } },
         { fileNumber: { $regex: search, $options: 'i' } },
-        { passportOrIdNumber: { $regex: search, $options: 'i' } }
+        { passportOrIdNumber: { $regex: search, $options: 'i' } },
+        { passportOrIdType: { $regex: search, $options: 'i' } }
       ];
     }
 
@@ -64,7 +103,25 @@ exports.getRegistrationById = async (req, res) => {
 // Update
 exports.updateRegistration = async (req, res) => {
   try {
-    const updated = await Registration.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    // Only allow updating schema fields
+    const updateFields = { ...req.body };
+
+    // Ensure familyUnder15 supports ageType (years/months)
+    if (Array.isArray(updateFields.familyUnder15)) {
+      updateFields.familyUnder15 = updateFields.familyUnder15.map(m => ({
+        ...m,
+        ageType: m.ageType === "months" ? "months" : "years"
+      }));
+    }
+    // Optionally, same for familyMozambique if you want ageType there too
+    if (Array.isArray(updateFields.familyMozambique)) {
+      updateFields.familyMozambique = updateFields.familyMozambique.map(m => ({
+        ...m,
+        ageType: m.ageType === "months" ? "months" : "years"
+      }));
+    }
+
+    const updated = await Registration.findByIdAndUpdate(req.params.id, updateFields, { new: true });
     res.json(updated);
   } catch (err) {
     res.status(400).json({ message: err.message });
