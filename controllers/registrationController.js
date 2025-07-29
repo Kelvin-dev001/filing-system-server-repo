@@ -158,3 +158,13 @@ exports.getRegistrationByFileNumber = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Get all registration file numbers
+exports.getRegistrationFileNumbers = async (req, res) => {
+  try {
+    const regs = await Registration.find({}, { fileNumber: 1, fullName: 1, _id: 0 });
+    res.json(regs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

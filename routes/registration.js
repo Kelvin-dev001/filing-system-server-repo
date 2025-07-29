@@ -11,6 +11,8 @@ router.get('/', registrationController.getRegistrations);
 // Add this route BEFORE '/:id' to avoid conflict
 router.get('/by-file-number/:fileNumber', registrationController.getRegistrationByFileNumber);
 
+router.get('/file-numbers', registrationController.getRegistrationFileNumbers);
+
 // Get a registration by ID
 router.get('/:id', registrationController.getRegistrationById);
 
