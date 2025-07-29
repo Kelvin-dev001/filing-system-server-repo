@@ -147,3 +147,14 @@ exports.searchRegistrations = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Get registration by fileNumber
+exports.getRegistrationByFileNumber = async (req, res) => {
+  try {
+    const reg = await Registration.findOne({ fileNumber: req.params.fileNumber });
+    if (!reg) return res.status(404).json({ message: "Registration not found" });
+    res.json(reg);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

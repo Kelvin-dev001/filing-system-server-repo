@@ -8,6 +8,9 @@ router.post('/', registrationController.createRegistration);
 // Get all registrations with pagination & search
 router.get('/', registrationController.getRegistrations);
 
+// Add this route BEFORE '/:id' to avoid conflict
+router.get('/by-file-number/:fileNumber', registrationController.getRegistrationByFileNumber);
+
 // Get a registration by ID
 router.get('/:id', registrationController.getRegistrationById);
 
