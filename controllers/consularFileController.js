@@ -34,7 +34,7 @@ exports.getConsularFiles = async (req, res) => {
 
     const total = await ConsularFile.countDocuments(query);
     const files = await ConsularFile.find(query)
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .skip((page - 1) * limit)
       .limit(Number(limit));
 

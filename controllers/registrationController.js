@@ -69,7 +69,7 @@ exports.getRegistrations = async (req, res) => {
 
     const total = await Registration.countDocuments(query);
     const regs = await Registration.find(query)
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .skip((page - 1) * limit)
       .limit(Number(limit));
 
